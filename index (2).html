@@ -1,0 +1,393 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0d0f1a;--bg2:#13162a;--bg3:#1a1e35;--bg4:#21263d;--bg5:#272c45;
+  --border:#2a2f4a;--border2:#353b5e;
+  --text:#e8ecf8;--text2:#9aa3c4;--text3:#5c6490;
+  --blue:#4a9eff;--green:#00d084;--yellow:#f5c842;--orange:#ff8c42;--red:#ff4d6a;--purple:#a78bfa;
+}
+body{font-family:'Inter',var(--font-sans);background:var(--bg);color:var(--text);}
+.dash{background:var(--bg);min-height:600px;}
+
+.header{padding:1.5rem 1.75rem 1rem;background:linear-gradient(135deg,#0d0f1a 0%,#141830 60%,#1a1035 100%);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;right:0;top:0;width:200px;height:100%;background:radial-gradient(ellipse at right center,rgba(56,189,248,0.08) 0%,transparent 70%);}
+.header-title{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.header-title h1{font-size:22px;font-weight:700;color:var(--text);}
+.header-title h1 span{color:var(--blue);}
+.header-meta{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+.drop-icon{position:absolute;right:1.75rem;top:50%;transform:translateY(-50%);opacity:.85;}
+
+.tabs-bar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.75rem;background:var(--bg2);border-bottom:1px solid var(--border);}
+.tabs{display:flex;gap:4px;}
+.tab{display:flex;align-items:center;gap:6px;padding:7px 16px;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--text3);}
+.tab:hover{color:var(--text2);background:var(--bg3);}
+.tab.active{color:var(--text);background:var(--bg4);border-bottom:2px solid var(--blue);}
+.tab.active.t-otras{border-bottom-color:var(--yellow);}
+.upload-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;font-size:12px;border:1px solid #c49a00;border-radius:6px;cursor:pointer;color:var(--yellow);background:rgba(245,200,66,.08);font-weight:500;}
+.upload-btn:hover{background:rgba(245,200,66,.15);}
+.upload-btn svg{width:13px;height:13px;}
+#file-input{display:none;}
+
+.page{display:none;padding:1.5rem 1.75rem;}
+.page.active{display:block;}
+
+.metric-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:1.75rem;}
+.mcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
+.mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.mcard.c-blue::before{background:var(--blue);}
+.mcard.c-green::before{background:var(--green);}
+.mcard.c-yellow::before{background:var(--yellow);}
+.mcard.c-red::before{background:var(--red);}
+.mcard.c-purple::before{background:var(--purple);}
+.mcard-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.mcard-val{font-size:32px;font-weight:700;line-height:1;margin-bottom:6px;}
+.mcard.c-blue .mcard-val{color:var(--blue);}
+.mcard.c-green .mcard-val{color:var(--green);}
+.mcard.c-yellow .mcard-val{color:var(--yellow);}
+.mcard.c-red .mcard-val{color:var(--red);}
+.mcard.c-purple .mcard-val{color:var(--purple);}
+.mcard-sub{font-size:11px;color:var(--text3);}
+
+.section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+.chart-card-title{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:1rem;}
+.donut-wrap{display:flex;align-items:center;gap:1.5rem;}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.donut-center-num{font-size:22px;font-weight:700;color:var(--text);}
+.donut-center-lbl{font-size:10px;color:var(--text3);}
+.donut-legend .dl-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.donut-legend .dl-row:last-child{margin-bottom:0;}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dl-lbl{font-size:12px;color:var(--text2);flex:1;}
+.dl-val{font-size:13px;font-weight:600;}
+.dl-pct{font-size:11px;color:var(--text3);margin-left:4px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.bar-row:last-child{margin-bottom:0;}
+.bar-lbl{font-size:12px;font-weight:500;flex:0 0 80px;}
+.bar-track{flex:1;height:7px;background:var(--bg4);border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;}
+.bar-cnt{font-size:13px;font-weight:600;min-width:28px;text-align:right;}
+
+.search-row{display:flex;align-items:center;gap:8px;margin-bottom:1rem;}
+.search-box{display:flex;align-items:center;gap:8px;flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;}
+.search-box svg{width:14px;height:14px;color:var(--text3);flex-shrink:0;}
+.search-box input{flex:1;background:transparent;border:none;outline:none;font-size:13px;color:var(--text);caret-color:var(--blue);}
+.search-box input::placeholder{color:var(--text3);}
+.clear-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border2);border-radius:5px;cursor:pointer;background:transparent;color:var(--text3);display:none;}
+.clear-btn:hover{color:var(--text);}
+.prio-filters{display:flex;gap:6px;}
+.pf{padding:5px 11px;font-size:11px;font-weight:500;border-radius:99px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text3);}
+.pf:hover{background:var(--bg4);}
+.pf.pf-all.sel{background:var(--bg4);border-color:var(--border2);color:var(--text);}
+.pf.pf-urgente.sel{background:rgba(255,77,106,.15);border-color:var(--red);color:var(--red);}
+.pf.pf-critica.sel{background:rgba(255,140,66,.15);border-color:var(--orange);color:var(--orange);}
+.pf.pf-alta.sel{background:rgba(245,200,66,.15);border-color:var(--yellow);color:var(--yellow);}
+.pf.pf-media.sel{background:rgba(74,158,255,.15);border-color:var(--blue);color:var(--blue);}
+
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.table-hdr{padding:.625rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;background:var(--bg3);}
+.table-hdr span{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
+#row-count,#row-count-otras{font-size:11px;color:var(--text3);margin-left:auto;}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{padding:8px 12px;font-size:10px;font-weight:600;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;background:var(--bg3);}
+
+.gh td{padding:5px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);}
+.gh-urgente td{background:#1e0a12;color:var(--red);}
+.gh-critica td{background:#1e1008;color:var(--orange);}
+.gh-alta td{background:#1e1a04;color:var(--yellow);}
+.gh-media td{background:#081422;color:var(--blue);}
+
+.tr-u{background:#180810;}
+.tr-c{background:#180e06;}
+.tr-a{background:#181602;}
+.tr-m{background:#06101e;}
+.tr-otras{background:#12102a;}
+
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:filter .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:not(.gh):hover{filter:brightness(1.35);}
+/* tooltip hint */
+tbody tr:not(.gh):hover .titulo-col::after{content:' ↗';color:var(--blue);font-size:11px;}
+
+tbody td{padding:9px 12px;color:var(--text);vertical-align:middle;}
+.id-col{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);}
+.titulo-col{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text2);}
+.tienda-col{font-weight:600;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid transparent;}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;}
+.b-urgente{background:rgba(255,77,106,.15);color:var(--red);border-color:var(--red);}.b-urgente::before{background:var(--red);}
+.b-critica{background:rgba(255,140,66,.15);color:var(--orange);border-color:var(--orange);}.b-critica::before{background:var(--orange);}
+.b-alta{background:rgba(245,200,66,.15);color:var(--yellow);border-color:var(--yellow);}.b-alta::before{background:var(--yellow);}
+.b-media{background:rgba(74,158,255,.15);color:var(--blue);border-color:var(--blue);}.b-media::before{background:var(--blue);}
+.b-otros{background:rgba(167,139,250,.15);color:var(--purple);border-color:var(--purple);}.b-otros::before{background:var(--purple);}
+.no-results{text-align:center;padding:2.5rem;color:var(--text3);font-size:13px;}
+mark{background:#3d3300;color:#ffd700;border-radius:2px;padding:0 2px;}
+
+.click-hint{font-size:10px;color:var(--text3);margin-bottom:.5rem;display:flex;align-items:center;gap:4px;}
+.click-hint svg{width:12px;height:12px;}
+</style>
+
+<div class="dash">
+  <div class="header">
+    <div class="header-title">
+      <span style="font-size:22px">🌧️</span>
+      <h1>Control de Incidencias de <span>Tiendas</span></h1>
+    </div>
+    <div class="header-meta" id="header-meta">Cargando...</div>
+    <div class="drop-icon">
+      <svg width="48" height="64" viewBox="0 0 60 80" fill="none">
+        <path d="M30 5 C30 5 5 38 5 52 C5 66 16.2 75 30 75 C43.8 75 55 66 55 52 C55 38 30 5 30 5Z" fill="#38bdf8" opacity="0.85"/>
+        <path d="M30 20 C30 20 14 43 14 52 C14 61 21 68 30 68" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <div class="tabs">
+      <button class="tab t-filt active" data-tab="filtraciones">🌧️ Filtraciones</button>
+      <button class="tab t-otras" data-tab="otras">📋 Otras Incidencias</button>
+    </div>
+    <label class="upload-btn" for="file-input">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Actualizar Datos
+    </label>
+    <input type="file" id="file-input" accept=".xlsx,.xls,.csv">
+  </div>
+
+  <!-- FILTRACIONES -->
+  <div class="page active" id="page-filtraciones">
+    <div class="metric-grid">
+      <div class="mcard c-blue"><div class="mcard-lbl">Total Filtraciones</div><div class="mcard-val" id="m-total">—</div><div class="mcard-sub" id="m-total-sub">—</div></div>
+      <div class="mcard c-green"><div class="mcard-lbl">Severidad Leve</div><div class="mcard-val" id="m-leve">—</div><div class="mcard-sub">Prioridad Media</div></div>
+      <div class="mcard c-yellow"><div class="mcard-lbl">Severidad Moderada</div><div class="mcard-val" id="m-mod">—</div><div class="mcard-sub">Prioridad Alta</div></div>
+      <div class="mcard c-red"><div class="mcard-lbl">Severidad Crítica</div><div class="mcard-val" id="m-crit">—</div><div class="mcard-sub">Crítica / Urgente</div></div>
+      <div class="mcard c-purple"><div class="mcard-lbl">Otras Incidencias</div><div class="mcard-val" id="m-otros">—</div><div class="mcard-sub">Fuera del foco</div></div>
+    </div>
+
+    <div class="section-title">Análisis Visual</div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">Distribución por Severidad</div>
+        <div class="donut-wrap">
+          <div style="position:relative;width:130px;height:130px;flex-shrink:0;">
+            <canvas id="donutChart" width="130" height="130"></canvas>
+            <div class="donut-center"><div class="donut-center-num" id="donut-num">—</div><div class="donut-center-lbl">tickets</div></div>
+          </div>
+          <div class="donut-legend">
+            <div class="dl-row"><span class="dl-dot" style="background:var(--red)"></span><span class="dl-lbl">Crítica</span><span class="dl-val" id="dl-crit" style="color:var(--red)">—</span><span class="dl-pct" id="dlp-crit">—</span></div>
+            <div class="dl-row"><span class="dl-dot" style="background:var(--yellow)"></span><span class="dl-lbl">Moderada</span><span class="dl-val" id="dl-mod" style="color:var(--yellow)">—</span><span class="dl-pct" id="dlp-mod">—</span></div>
+            <div class="dl-row"><span class="dl-dot" style="background:var(--green)"></span><span class="dl-lbl">Leve</span><span class="dl-val" id="dl-leve" style="color:var(--green)">—</span><span class="dl-pct" id="dlp-leve">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Filtraciones por Prioridad</div>
+        <div id="bar-chart-container" style="margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <div class="section-title">Detalle de Tickets</div>
+    <div class="click-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Hacé clic en cualquier fila para abrir el ticket en InvGate
+    </div>
+    <div class="search-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="search-input" placeholder="Buscar número de tienda, ID de ticket o título...">
+        <button class="clear-btn" id="clear-btn" onclick="clearSearch()">✕</button>
+      </div>
+      <div class="prio-filters">
+        <button class="pf pf-all sel" data-prio="all">Todas</button>
+        <button class="pf pf-urgente" data-prio="Urgente">Urgente</button>
+        <button class="pf pf-critica" data-prio="Crítica">Crítica</button>
+        <button class="pf pf-alta" data-prio="Alta">Alta</button>
+        <button class="pf pf-media" data-prio="Media">Media</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-hdr"><span>Tickets de Filtraciones</span><span id="row-count">—</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID Ticket</th><th>Tienda</th><th>Título</th><th>Prioridad</th><th>Fecha</th></tr></thead>
+          <tbody id="tbl-body"></tbody>
+        </table>
+        <div class="no-results" id="no-results" style="display:none">Sin resultados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OTRAS -->
+  <div class="page" id="page-otras">
+    <div class="metric-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+      <div class="mcard c-purple"><div class="mcard-lbl">Total Otras Incidencias</div><div class="mcard-val" id="m-otras-total" style="color:var(--purple)">—</div><div class="mcard-sub">No relacionadas a filtraciones</div></div>
+      <div class="mcard c-yellow"><div class="mcard-lbl">Prioridad Alta / Urgente</div><div class="mcard-val" id="m-otras-altas" style="color:var(--yellow)">—</div><div class="mcard-sub">Requieren atención</div></div>
+      <div class="mcard c-blue"><div class="mcard-lbl">Prioridad Media / Baja</div><div class="mcard-val" id="m-otras-bajas" style="color:var(--blue)">—</div><div class="mcard-sub">Seguimiento normal</div></div>
+    </div>
+    <div class="section-title">Detalle — Otras Incidencias</div>
+    <div class="click-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Hacé clic en cualquier fila para abrir el ticket en InvGate
+    </div>
+    <div class="search-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="search-otras" placeholder="Buscar tienda, ID o título...">
+        <button class="clear-btn" id="clear-otras-btn" onclick="clearOtras()">✕</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-hdr"><span>Otras Incidencias</span><span id="row-count-otras">—</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID Ticket</th><th>Tienda</th><th>Título</th><th>Prioridad</th><th>Categoría</th><th>Fecha</th></tr></thead>
+          <tbody id="tbl-otras-body"></tbody>
+        </table>
+        <div class="no-results" id="no-results-otras" style="display:none">Sin resultados</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const BASE_URL='https://dia.cloud.invgate.net/requests/show/index/id/';
+function openTicket(id){if(id) openLink(BASE_URL+id);}
+
+const KEYWORDS=['filtr','goter','humedad','inundad','cae agua','pierde agua','perdida de agua','desague','desagüe','agua'];
+function isFilt(t){if(!t)return false;const l=t.toLowerCase();return KEYWORDS.some(k=>l.includes(k));}
+
+const PRIO_ORDER=['Urgente','Crítica','Alta','Media'];
+const PRIO_CLASS={Urgente:'b-urgente','Crítica':'b-critica',Alta:'b-alta',Media:'b-media'};
+const ROW_CLS={Urgente:'tr-u','Crítica':'tr-c',Alta:'tr-a',Media:'tr-m'};
+const GH_CLS={Urgente:'gh-urgente','Crítica':'gh-critica',Alta:'gh-alta',Media:'gh-media'};
+const GH_LBL={Urgente:'⚠ Urgente','Crítica':'● Crítica',Alta:'● Alta',Media:'● Media'};
+const COLORS={Urgente:'#ff4d6a','Crítica':'#ff8c42',Alta:'#f5c842',Media:'#4a9eff'};
+
+let allData=[{"id":5808387,"tienda":"Tienda 539","prioridad":"Crítica","fecha":"08/03/2025, 12:54","titulo":"T 539 - Filtracion - Rebollo","categoria":"Mant. Civil","es_filtracion":true},{"id":5978611,"tienda":"Tienda 457","prioridad":"Media","fecha":"14/07/2025, 16:48","titulo":"T457 goteras que tenemos justo encima de la góndola de leche","categoria":"Mant. Civil","es_filtracion":true},{"id":6000800,"tienda":"Tienda 5267","prioridad":"Crítica","fecha":"29/07/2025, 18:41","titulo":"T5267 FILTRACIONES SOBRE EQUIPOS AA","categoria":"Mant. Civil","es_filtracion":true},{"id":6011901,"tienda":"Tienda 712","prioridad":"Crítica","fecha":"06/08/2025, 19:28","titulo":"T712 - Varios civil por ACTA","categoria":"Mant. Civil","es_filtracion":false},{"id":6032664,"tienda":"Tienda 223","prioridad":"Alta","fecha":"21/08/2025, 14:49","titulo":"T223 Se esta filtrando agua sobre las cajas","categoria":"Mant. Civil","es_filtracion":true},{"id":6037758,"tienda":"Tienda 109","prioridad":"Alta","fecha":"25/08/2025, 13:21","titulo":"T 109 - Plan remo cabildo - Fibra","categoria":"Civil > Pintura","es_filtracion":false},{"id":6061698,"tienda":"Tienda 194","prioridad":"Urgente","fecha":"11/09/2025, 10:41","titulo":"T194 Freezer sin Funcionar - EPTA","categoria":"Frío","es_filtracion":false},{"id":6063020,"tienda":"Tienda 1019","prioridad":"Alta","fecha":"12/09/2025, 12:29","titulo":"T1019 Atmosferico - ACONTEC","categoria":"Mant. Civil","es_filtracion":false},{"id":6070079,"tienda":"Tienda 119","prioridad":"Crítica","fecha":"18/09/2025, 10:07","titulo":"T119 - tienda sin agua - INDINACO","categoria":"Mant. Civil","es_filtracion":true},{"id":6071728,"tienda":"Tienda 5414","prioridad":"Crítica","fecha":"19/09/2025, 08:26","titulo":"Filtraciones","categoria":"Mant. Civil","es_filtracion":true},{"id":6071870,"tienda":"Tienda 688","prioridad":"Alta","fecha":"19/09/2025, 09:32","titulo":"guardaganado","categoria":"Mant. Civil","es_filtracion":false},{"id":6071884,"tienda":"Tienda 107","prioridad":"Urgente","fecha":"19/09/2025, 09:40","titulo":"107: filtraciones al salon de ventas","categoria":"Mant. Civil","es_filtracion":true},{"id":6071907,"tienda":"Tienda 9","prioridad":"Alta","fecha":"19/09/2025, 09:54","titulo":"goteras en techo cambio de franquiciado","categoria":"Serv. Generales","es_filtracion":true},{"id":6071915,"tienda":"Tienda 126","prioridad":"Crítica","fecha":"19/09/2025, 09:58","titulo":"T126 Filtración de agua arriba de mural de lácteos","categoria":"Mant. Civil","es_filtracion":true},{"id":6071936,"tienda":"Tienda 98","prioridad":"Alta","fecha":"19/09/2025, 10:05","titulo":"T98 - FILTRACION CERCA DE LA LINEA DE CAJA","categoria":"Mant. Civil","es_filtracion":true},{"id":6071937,"tienda":"Tienda 310","prioridad":"Crítica","fecha":"19/09/2025, 10:06","titulo":"T310 FILTRACIONES DE AGUA Y PROBLEMAS ELECTRICOS","categoria":"Mant. Civil","es_filtracion":true},{"id":6071941,"tienda":"Tienda 5486","prioridad":"Crítica","fecha":"19/09/2025, 10:09","titulo":"t5486 filtraciones en el mural","categoria":"Mant. Civil","es_filtracion":true},{"id":6071959,"tienda":"Tienda 108","prioridad":"Alta","fecha":"19/09/2025, 10:15","titulo":"T108 - filtracion en el techo y se nos moja la mercaderia","categoria":"Mant. Civil","es_filtracion":true},{"id":6071965,"tienda":"Tienda 56","prioridad":"Crítica","fecha":"19/09/2025, 10:16","titulo":"T56 filtraciónes de lluvia en el baño","categoria":"Mant. Civil","es_filtracion":true},{"id":6071979,"tienda":"Tienda 5297","prioridad":"Urgente","fecha":"19/09/2025, 10:21","titulo":"tienda inundada","categoria":"Mant. Civil","es_filtracion":true},{"id":6071988,"tienda":"Tienda 771","prioridad":"Media","fecha":"19/09/2025, 10:23","titulo":"T771 - Filtración cae sobre murales","categoria":"Mant. Civil","es_filtracion":true},{"id":6072007,"tienda":"Tienda 241","prioridad":"Alta","fecha":"19/09/2025, 10:27","titulo":"T241 FILTRACIONES EN SALON","categoria":"Mant. Civil","es_filtracion":true},{"id":6072015,"tienda":"Tienda 673","prioridad":"Urgente","fecha":"19/09/2025, 10:29","titulo":"desaghues","categoria":"Mant. Civil","es_filtracion":false},{"id":6072019,"tienda":"Tienda 5371","prioridad":"Alta","fecha":"19/09/2025, 10:30","titulo":"FILTRACION POR LLUVIA","categoria":"Mant. Civil","es_filtracion":true},{"id":6072020,"tienda":"Tienda 1026","prioridad":"Crítica","fecha":"19/09/2025, 10:30","titulo":"T1026 - GOTERAS EN LA PC Y EN LA IMPRESORA","categoria":"Mant. Civil","es_filtracion":true},{"id":6072025,"tienda":"Tienda 663","prioridad":"Alta","fecha":"19/09/2025, 10:31","titulo":"FILTRACIONES T663","categoria":"Mant. Civil","es_filtracion":true},{"id":6072026,"tienda":"Tienda 5513","prioridad":"Crítica","fecha":"19/09/2025, 10:31","titulo":"Filtracion Agua, sobre electrico","categoria":"Mant. Civil","es_filtracion":true},{"id":6072028,"tienda":"Tienda 934","prioridad":"Alta","fecha":"19/09/2025, 10:32","titulo":"tda934 tienda con perdida de agua por lluvia","categoria":"Mant. Civil","es_filtracion":true},{"id":6072047,"tienda":"Tienda 488","prioridad":"Alta","fecha":"19/09/2025, 10:35","titulo":"Filtraciones sobre luminarias","categoria":"Mant. Civil","es_filtracion":true},{"id":6072050,"tienda":"Tienda 387","prioridad":"Alta","fecha":"19/09/2025, 10:36","titulo":"Gotera del techo","categoria":"Serv. Generales","es_filtracion":true},{"id":6072067,"tienda":"Tienda 189","prioridad":"Crítica","fecha":"19/09/2025, 10:39","titulo":"FILTRACIÓN DE AGUA","categoria":"Mant. Civil","es_filtracion":true},{"id":6072072,"tienda":"Tienda 741","prioridad":"Crítica","fecha":"19/09/2025, 10:40","titulo":"CAE AGUA SOBRE CENTRAL DE FRIO","categoria":"Mant. Civil","es_filtracion":true},{"id":6072081,"tienda":"Tienda 256","prioridad":"Alta","fecha":"19/09/2025, 10:44","titulo":"Deposito se inunda. T 256","categoria":"Mant. Civil","es_filtracion":false},{"id":6072094,"tienda":"Tienda 49","prioridad":"Alta","fecha":"19/09/2025, 10:48","titulo":"td 49 pierde aguas negras varias tuberias","categoria":"Mant. Civil","es_filtracion":true},{"id":6072118,"tienda":"Tienda 679","prioridad":"Crítica","fecha":"19/09/2025, 10:52","titulo":"Filtraciones en salón de ventas","categoria":"Mant. Civil","es_filtracion":true},{"id":6072119,"tienda":"Tienda 123","prioridad":"Crítica","fecha":"19/09/2025, 10:52","titulo":"Filtración por Lluvias","categoria":"Mant. Civil","es_filtracion":true},{"id":6072126,"tienda":"Tienda 264","prioridad":"Crítica","fecha":"19/09/2025, 10:54","titulo":"T264 Filtraciones fuerte en la tienda","categoria":"Mant. Civil","es_filtracion":true},{"id":6072136,"tienda":"Tienda 384","prioridad":"Crítica","fecha":"19/09/2025, 10:57","titulo":"gotera","categoria":"Mant. Civil","es_filtracion":true},{"id":6072140,"tienda":"Tienda 943","prioridad":"Alta","fecha":"19/09/2025, 10:58","titulo":"FILTRACION DE AGUA POR LLUVIAS","categoria":"Mant. Civil","es_filtracion":true},{"id":6072143,"tienda":"Tienda 59","prioridad":"Crítica","fecha":"19/09/2025, 10:58","titulo":"Filtración por lluvias","categoria":"Mant. Civil","es_filtracion":true},{"id":6072184,"tienda":"Tienda 407","prioridad":"Crítica","fecha":"19/09/2025, 11:07","titulo":"T407 filtracion en murales","categoria":"Mant. Civil","es_filtracion":true},{"id":6072201,"tienda":"Tienda 1011","prioridad":"Alta","fecha":"19/09/2025, 11:09","titulo":"T1011 INUNDADA, AGUA CON OLOR A EXCREMENTO","categoria":"Mant. Civil","es_filtracion":true},{"id":6072225,"tienda":"Tienda 73","prioridad":"Crítica","fecha":"19/09/2025, 11:15","titulo":"Tda 73 filtraciones","categoria":"Mant. Civil","es_filtracion":true},{"id":6072232,"tienda":"Tienda 402","prioridad":"Alta","fecha":"19/09/2025, 11:16","titulo":"T402 - Filtracion en reserva","categoria":"Mant. Civil","es_filtracion":true},{"id":6072282,"tienda":"Tienda 13","prioridad":"Crítica","fecha":"19/09/2025, 11:24","titulo":"filtraciones","categoria":"Mant. Civil","es_filtracion":true},{"id":6072290,"tienda":"Tienda 1080","prioridad":"Alta","fecha":"19/09/2025, 11:26","titulo":"filtraciones","categoria":"Mant. Civil","es_filtracion":true},{"id":6072306,"tienda":"Tienda 5533","prioridad":"Alta","fecha":"19/09/2025, 11:30","titulo":"Tda 5533 filtraciones","categoria":"Mant. Civil","es_filtracion":true},{"id":6072332,"tienda":"Tienda 85","prioridad":"Crítica","fecha":"19/09/2025, 11:39","titulo":"FILTRACIONES SALON/DEPOSITOS","categoria":"Mant. Civil","es_filtracion":true},{"id":6072423,"tienda":"Tienda 1041","prioridad":"Crítica","fecha":"19/09/2025, 12:06","titulo":"goteras","categoria":"Mant. Civil","es_filtracion":true}];
+
+let activePrio='all',searchTerm='',searchOtras='',donutChart=null;
+
+function today(){const d=new Date();const m=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];return `${d.getDate()} de ${m[d.getMonth()]} de ${d.getFullYear()}`;}
+function hl(text,term){if(!term||!text)return String(text||'');const re=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return String(text).replace(re,'<mark>$1</mark>');}
+
+function updateAll(){
+  const filt=allData.filter(d=>d.es_filtracion);
+  const otros=allData.filter(d=>!d.es_filtracion);
+  document.getElementById('header-meta').textContent=`${today()} · InvGate Service Desk · ${allData.length} tickets procesados`;
+  const crit=filt.filter(d=>d.prioridad==='Crítica'||d.prioridad==='Urgente').length;
+  const mod=filt.filter(d=>d.prioridad==='Alta').length;
+  const leve=filt.filter(d=>d.prioridad==='Media').length;
+  document.getElementById('m-total').textContent=filt.length;
+  document.getElementById('m-total-sub').textContent=`de ${allData.length} tickets del día`;
+  document.getElementById('m-leve').textContent=leve;
+  document.getElementById('m-mod').textContent=mod;
+  document.getElementById('m-crit').textContent=crit;
+  document.getElementById('m-otros').textContent=otros.length;
+  document.getElementById('donut-num').textContent=filt.length;
+  document.getElementById('dl-crit').textContent=crit;document.getElementById('dlp-crit').textContent='('+Math.round(crit/filt.length*100)+'%)';
+  document.getElementById('dl-mod').textContent=mod;document.getElementById('dlp-mod').textContent='('+Math.round(mod/filt.length*100)+'%)';
+  document.getElementById('dl-leve').textContent=leve;document.getElementById('dlp-leve').textContent='('+Math.round(leve/filt.length*100)+'%)';
+  if(donutChart)donutChart.destroy();
+  donutChart=new Chart(document.getElementById('donutChart').getContext('2d'),{type:'doughnut',data:{datasets:[{data:[crit,mod,leve],backgroundColor:['#ff4d6a','#f5c842','#00d084'],borderWidth:0,hoverOffset:4}]},options:{responsive:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+['Crítica','Moderada','Leve'][c.dataIndex]+': '+c.parsed;}}}}}});
+  const counts={Urgente:0,'Crítica':0,Alta:0,Media:0};
+  filt.forEach(d=>{if(counts[d.prioridad]!==undefined)counts[d.prioridad]++;});
+  const maxC=Math.max(...Object.values(counts),1);
+  document.getElementById('bar-chart-container').innerHTML=PRIO_ORDER.map(p=>`<div class="bar-row"><span class="bar-lbl" style="color:${COLORS[p]}">${p}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(counts[p]/maxC*100)}%;background:${COLORS[p]}"></div></div><span class="bar-cnt" style="color:${COLORS[p]}">${counts[p]}</span></div>`).join('');
+  document.getElementById('m-otras-total').textContent=otros.length;
+  const otrasAltas=otros.filter(d=>['Alta','Urgente','Crítica'].includes(d.prioridad)).length;
+  document.getElementById('m-otras-altas').textContent=otrasAltas;
+  document.getElementById('m-otras-bajas').textContent=otros.length-otrasAltas;
+  renderFilt();renderOtras();
+}
+
+function renderFilt(){
+  const tbody=document.getElementById('tbl-body');
+  const noRes=document.getElementById('no-results');
+  document.getElementById('clear-btn').style.display=searchTerm?'block':'none';
+  let filt=allData.filter(d=>d.es_filtracion);
+  if(activePrio!=='all')filt=filt.filter(d=>d.prioridad===activePrio);
+  if(searchTerm){const s=searchTerm.toLowerCase();filt=filt.filter(d=>(d.tienda||'').toLowerCase().includes(s)||String(d.id).includes(s)||(d.titulo||'').toLowerCase().includes(s));}
+  document.getElementById('row-count').textContent=filt.length+' registros';
+  if(!filt.length){tbody.innerHTML='';noRes.style.display='block';return;}
+  noRes.style.display='none';
+  const groups={};PRIO_ORDER.forEach(p=>groups[p]=[]);
+  filt.forEach(d=>{(groups[d.prioridad]||groups['Media']).push(d);});
+  let html='';
+  PRIO_ORDER.forEach(p=>{
+    const grp=groups[p];if(!grp.length)return;
+    if(activePrio==='all')html+=`<tr class="gh ${GH_CLS[p]}"><td colspan="5">${GH_LBL[p]} · ${grp.length} ticket${grp.length!==1?'s':''}</td></tr>`;
+    grp.forEach(d=>{
+      html+=`<tr class="${ROW_CLS[p]||''}" onclick="openTicket(${d.id})" title="Abrir ticket #${d.id} en InvGate">
+        <td class="id-col">#${hl(d.id,searchTerm)}</td>
+        <td class="tienda-col">${hl(d.tienda||'-',searchTerm)}</td>
+        <td class="titulo-col">${hl(d.titulo||'-',searchTerm)}</td>
+        <td><span class="badge ${PRIO_CLASS[p]||'b-media'}">${p}</span></td>
+        <td style="white-space:nowrap;font-size:11px;color:var(--text3)">${d.fecha||'-'}</td>
+      </tr>`;
+    });
+  });
+  tbody.innerHTML=html;
+}
+
+function renderOtras(){
+  const tbody=document.getElementById('tbl-otras-body');
+  const noRes=document.getElementById('no-results-otras');
+  document.getElementById('clear-otras-btn').style.display=searchOtras?'block':'none';
+  let otras=allData.filter(d=>!d.es_filtracion);
+  if(searchOtras){const s=searchOtras.toLowerCase();otras=otras.filter(d=>(d.tienda||'').toLowerCase().includes(s)||String(d.id).includes(s)||(d.titulo||'').toLowerCase().includes(s));}
+  document.getElementById('row-count-otras').textContent=otras.length+' registros';
+  if(!otras.length){tbody.innerHTML='';noRes.style.display='block';return;}
+  noRes.style.display='none';
+  tbody.innerHTML=otras.map(d=>`
+    <tr class="tr-otras" onclick="openTicket(${d.id})" title="Abrir ticket #${d.id} en InvGate">
+      <td class="id-col">#${hl(d.id,searchOtras)}</td>
+      <td class="tienda-col">${hl(d.tienda||'-',searchOtras)}</td>
+      <td class="titulo-col">${hl(d.titulo||'-',searchOtras)}</td>
+      <td><span class="badge ${PRIO_CLASS[d.prioridad]||'b-otros'}">${d.prioridad||'-'}</span></td>
+      <td style="font-size:11px;color:var(--text3)">${d.categoria||'Otros'}</td>
+      <td style="white-space:nowrap;font-size:11px;color:var(--text3)">${d.fecha||'-'}</td>
+    </tr>`).join('');
+}
+
+function clearSearch(){document.getElementById('search-input').value='';searchTerm='';renderFilt();}
+function clearOtras(){document.getElementById('search-otras').value='';searchOtras='';renderOtras();}
+
+document.querySelectorAll('.tab').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('page-'+btn.dataset.tab).classList.add('active');});});
+document.querySelectorAll('.pf').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.pf').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');activePrio=btn.dataset.prio;renderFilt();});});
+document.getElementById('search-input').addEventListener('input',e=>{searchTerm=e.target.value.trim();renderFilt();});
+document.getElementById('search-otras').addEventListener('input',e=>{searchOtras=e.target.value.trim();renderOtras();});
+
+document.getElementById('file-input').addEventListener('change',function(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'binary'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:null});
+      allData=rows.map(r=>({
+        id:r['ID']||r['id']||'',
+        tienda:r['Cliente']||r['Tienda']||r['cliente']||r['tienda']||'',
+        prioridad:r['Prioridad']||r['prioridad']||'',
+        fecha:r['Fecha de creación']||r['Fecha']||r['fecha']||'',
+        titulo:r['Título']||r['Titulo']||r['titulo']||r['TITULO']||'',
+        categoria:r['Categoría']||r['categoria']||r['Categoria']||'Otros',
+        es_filtracion:isFilt(r['Título']||r['Titulo']||r['titulo']||r['TITULO']||'')
+      }));
+      activePrio='all';searchTerm='';searchOtras='';
+      document.getElementById('search-input').value='';document.getElementById('search-otras').value='';
+      document.querySelectorAll('.pf').forEach(b=>b.classList.remove('sel'));document.querySelector('.pf-all').classList.add('sel');
+      updateAll();
+    }catch(err){alert('No se pudo leer el archivo.');}
+  };
+  reader.readAsBinaryString(file);this.value='';
+});
+
+updateAll();
+</script>
